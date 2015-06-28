@@ -25,12 +25,7 @@
 
 <script>
 
-var snapCenters = [[83,82],[80,222],[82,376],[80,524],[227,77],[228,223],[227,376],[227,519],[378,79],[379,224],[378,376],[379,524],[535,77],[536,224],[536,376],[536,518],[702,80],[705,224],[703,377],[705,523]];
 var snapPoints = [[0,0],[0,139],[0,282],[0,448],[148,0],[140,133],[149,291],[140,438],[285,0],[294,142],[285,285],[293,448],[450,0],[441,133],[451,293],[442,437],[604,0],[610,142],[605,285],[610,447]];
-
-function getDistance(p1,p2) {
-	return Math.sqrt(Math.pow(p1[0]-p2[0],2) + Math.pow(p1[1]-p2[1],2));
-}
 
 var dragging = {
 
@@ -46,30 +41,6 @@ var dragging = {
 
 	mouseUp: function(e) {
 		dragging.isDragging = false;
-
-		var cx = !parseInt(dragging.target.style.left)?0:parseInt(dragging.target.style.left) + parseInt(dragging.target.style.width)/2;
-		var cy  = !parseInt(dragging.target.style.top)?0:parseInt(dragging.target.style.top) + parseInt(dragging.target.style.height)/2;
-
-
-		if(cx >30 && cx < 830 && cy>30 && cy<630) {
-			var c = [cx,cy];
-			var min=0,mini=0;
-			for(var i=0;i<snapCenters.length;i++)
-			{
-				var d = getDistance(snapCenters[i],c);
-				if(i==0)
-					min=d;
-				else if(d<min)
-				{
-					min = d;
-					mini = i;
-				}
-			}
-
-			dragging.target.style.left = snapPoints[mini][0] + "px";
-			dragging.target.style.top = snapPoints[mini][1] + "px";
-		}
-
 	},
 
 	mouseDown: function(e) {
@@ -127,10 +98,23 @@ window.onkeydown = function(e) {
 	document.title = (left + parseInt(dragging.target.style.width) + X) + " " + (top + parseInt(dragging.target.style.height) + Y);
 }
 
+function generateSnapPoints() {
+	var data =  "["
+	var pieces = document.getElementsByClassName("piece");
+	for(var i=0;i<pieces.length;i++)
+	{
+		if(i>0)
+			data += ",";
+		data += "[" + parseInt(parseInt(pieces[i].style.left) + parseInt(pieces[i].style.width)/2) + "," + parseInt(parseInt(pieces[i].style.top) + parseInt(pieces[i].style.height)/2) + "]";
+	}
+
+	data += "]";
+	document.write(data);
+}
 </script>
 </head>
 <body>
-<div id="jigsaw-container" style="position:absolute; left:30px; top:30px; width:800px; height:600px; border:1px solid #000;">
+<div style="position:absolute; left:30px; top:30px; width:800px; height:600px; border:1px solid #000;">
 	<?php
 	/*
 		$dir    = './puzzle1/';
@@ -155,6 +139,7 @@ window.onkeydown = function(e) {
 		echo $data;
 	?>
 </div>
+<input type=button onclick="generateSnapPoints()" value="Generate Snap Points" />
 </body>
 <script>
 var pieces = document.getElementsByClassName("piece");
