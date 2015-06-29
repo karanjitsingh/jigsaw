@@ -12,6 +12,7 @@
 	.piece {
 		position: absolute;
 		display:block;
+		transform-origin:50% 50%;
 	}
 
 	img {
@@ -21,6 +22,8 @@
 	    -webkit-user-select: none;
 	    user-select: none;
 	}
+
+
 </style>
 
 <script>
@@ -42,9 +45,12 @@ var dragging = {
 	enableDragging: function(obj) {
 		obj.onmousedown = dragging.mouseDown;
 		obj.onmouseup = dragging.mouseUp;
+		obj.oncontextmenu = function() {return false;};
 	},
 
 	mouseUp: function(e) {
+		if(e.which==3)
+			return;
 		dragging.isDragging = false;
 
 		var cx = !parseInt(dragging.target.style.left)?0:parseInt(dragging.target.style.left) + parseInt(dragging.target.style.width)/2;
@@ -73,10 +79,31 @@ var dragging = {
 	},
 
 	mouseDown: function(e) {
-		dragging.isDragging = true;
-		dragging.mx = e.pageX;
-		dragging.my = e.pageY;
-		dragging.target=e.target
+		if(e.which==1) {
+			dragging.isDragging = true;
+			dragging.mx = e.pageX;
+			dragging.my = e.pageY;
+			dragging.target=e.target;
+		}
+		else
+		{
+			e.preventDefault();
+			switch(e.target.style.transform)
+			{
+				case "rotate(90deg)":
+					e.target.style.transform = "rotate(180deg)";
+					break;
+				case "rotate(180deg)":
+					e.target.style.transform = "rotate(270deg)";
+					break;
+				case "rotate(270deg)":
+					e.target.style.transform = "rotate(360deg)";
+					break;
+				default:
+					e.target.style.transform = "rotate(90deg)";
+
+			}
+		}
 	},
 
 	mouseMove: function(e) {
@@ -88,11 +115,10 @@ var dragging = {
 			dragging.my = e.pageY;
 			var left = !parseInt(dragging.target.style.left)?0:parseInt(dragging.target.style.left);
 			var top  = !parseInt(dragging.target.style.top)?0:parseInt(dragging.target.style.top);
-			document.title = left;
 			dragging.target.style.left = (X + left) + "px";
 			dragging.target.style.top = (Y + top) + "px";
 		}
-	}
+	},
 
 
 }
@@ -124,7 +150,6 @@ window.onkeydown = function(e) {
 	var top  = !parseInt(dragging.target.style.top)?0:parseInt(dragging.target.style.top);
 	dragging.target.style.left = (X + left) + "px";
 	dragging.target.style.top = (Y + top) + "px";
-	document.title = (left + parseInt(dragging.target.style.width) + X) + " " + (top + parseInt(dragging.target.style.height) + Y);
 }
 
 </script>
