@@ -157,24 +157,8 @@ window.onkeydown = function(e) {
 <body>
 <div id="jigsaw-container" style="position:absolute; left:30px; top:30px; width:800px; height:600px; border:1px solid #000;">
 	<?php
-	/*
-		$dir    = './puzzle1/';
-		$files = scandir($dir);
-		$html = "";
-
-		$div_width = array();
-		$div_height = array();
-
-
-		for($x=1; $x<6 ; $x++) {
-			for($y=1;$y<5;$y++) {
-				$size=getimagesize($dir.$x.$y.".png");
-				echo "<div class=\"piece\" style=\"background:url($dir$x$y.png);width:$size[0]px;height:$size[1]px;left:0px;top:0px;\"\></div>";
-			}
-		}
-*/
-		$file = fopen("ideal.html","r");
-		$data = fread($file,filesize("ideal.html"));
+		$file = fopen("template.html","r");
+		$data = fread($file,filesize("template.html"));
 		fclose($file);
 
 		echo $data;
